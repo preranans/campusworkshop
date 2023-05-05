@@ -3,8 +3,8 @@ $(document).ready(function () {
     // show modal
     $('#task-modal').on('show.bs.modal', function (event) {
         const modal = $(this)
-          modal.find('.form-control').val('');
-        
+        modal.find('.form-control').val('');
+
     })
 
 
@@ -14,8 +14,8 @@ $(document).ready(function () {
         const content = button.data('content') // Extract info from data-* attributes
 
         const modal = $(this)
-            modal.find('.modal-title').text('Edit Task ' + taskID)
-            $('#task-form-display').attr('taskID', taskID)
+        modal.find('.modal-title').text('Edit Task ' + taskID)
+        $('#task-form-display').attr('taskID', taskID)
         if (content) {
             modal.find('.form-control').val(content);
         } else {
@@ -27,13 +27,13 @@ $(document).ready(function () {
         const tID = $('#task-form-display').attr('taskID');
         console.log($('#task-modal').find('.form-control').val())
         $.ajax({
-            type:'GET',
-            url:'/fetch-max-id',
-            success: function(res){
-                let id=0;
-                if(res.length==0){
+            type: 'GET',
+            url: '/fetch-max-id',
+            success: function (res) {
+                let id = 0;
+                if (res.length == 0) {
                     id = 1;
-                }else{
+                } else {
                     id = res;
                     id++;
                     console.log(id);
@@ -57,17 +57,17 @@ $(document).ready(function () {
                     }
                 });
 
-            },error: function(){
+            }, error: function () {
                 console.log('Error');
             }
         })
-       
-    });
-    
 
-   
-    
-    
+    });
+
+
+
+
+
     $('.remove').click(function () {
         const remove = $(this)
         $.ajax({
@@ -84,7 +84,7 @@ $(document).ready(function () {
     });
 
 
- $('.state').click(function () {
+    $('.state').click(function () {
         let state = $(this)
         let tID = state.data('source')
         let new_state;
@@ -92,9 +92,6 @@ $(document).ready(function () {
         if (state.text() === "Todo") {
             new_state = "In Progress"
         }
-       
-        console.log(new_state)
-    
         $.ajax({
             type: 'PATCH',
             url: '/edit-status/' + tID,
@@ -103,14 +100,41 @@ $(document).ready(function () {
                 'status': new_state
             }),
             success: function (res) {
-                
+
                 console.log(res)
                 location.reload();
-            }, 
+            },
             error: function () {
                 console.log('Error');
             }
         });
     });
-    
+    $('.state').click(function () {
+        let state = $(this)
+        let tID = state.data('source')
+        let new_state;
+
+        if (state.text() === "In Progress") {
+            new_state = "Completed"
+        }
+        console.log(new_state)
+
+        $.ajax({
+            type: 'PATCH',
+            url: '/edit-status/' + tID,
+            contentType: 'application/json;charset=UTF-8',
+            data: JSON.stringify({
+                'status': new_state
+            }),
+            success: function (res) {
+
+                console.log(res)
+                location.reload();
+            },
+            error: function () {
+                console.log('Error');
+            }
+        });
+    });
+
 });
